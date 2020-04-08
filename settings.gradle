@@ -1,0 +1,3 @@
+rootProject.name='Storyous Delivery'
+include ':app'
+include ':design'

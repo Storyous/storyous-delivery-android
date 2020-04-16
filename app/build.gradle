@@ -3,6 +3,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
 
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -15,6 +20,12 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "DELIVERY_API_URL", "\"https://api.storyous.com/\""
+        buildConfigField "String", "LOGIN_API_URL", "\"https://login.storyous.com/api/\""
+        buildConfigField "String", "LOGIN_URL", "\"https://login.storyous.com/api/auth/authorize?client_id=%1\$s&redirect_uri=%2\$s&response_type=code\""
+        buildConfigField "String", "LOGIN_CLIENT_ID", "\"...\""
+        buildConfigField "String", "LOGIN_CLIENT_SECRET", "\"...\""
+        buildConfigField "String", "LOGIN_REDIRECT_URL", "\"about://login\""
     }
 
     buildTypes {
@@ -70,4 +81,12 @@ dependencies {
 
     // Firebase
     implementation 'com.google.firebase:firebase-analytics:17.3.0'
+
+    api "com.github.Storyous.android-libraries:delivery:$storyous_libraries_version"
+    api "com.github.Storyous.android-libraries:common_utils:$storyous_libraries_version"
+
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-androidx-scope:$koin_version"
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+    implementation "org.koin:koin-androidx-fragment:$koin_version"
 }

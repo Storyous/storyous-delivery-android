@@ -1,3 +1,5 @@
 <resources>
-
+    <style name="MainTheme" parent="Theme.App">
+        <item name="colorPrimaryDark">@color/red</item>
+    </style>
 </resources>

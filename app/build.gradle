@@ -26,8 +26,8 @@ android {
         buildConfigField "String", "LOGIN_API_URL", "\"https://login.storyous.com/api/\""
         buildConfigField "String", "LOGIN_URL", "\"https://login.storyous.com/api/auth/authorize?client_id=%1\$s&redirect_uri=%2\$s&response_type=code\""
         buildConfigField "String", "LOGIN_CLIENT_ID", "\"$login_client_id\""
-        buildConfigField "String", "LOGIN_CLIENT_SECRET", "\"$login_client_secret\""
-        buildConfigField "String", "LOGIN_REDIRECT_URL", "\"about://login\""
+        buildConfigField "String", "LOGIN_REDIRECT_URL", "\"storyous://login\""
+        buildConfigField "String", "LOGIN_ORIGIN_HEADER", "\"storyous://login\""
     }
 
     buildTypes {

@@ -4,4 +4,3 @@ if (propertiesFile.exists()) {
     properties.load(propertiesFile.newDataInputStream())
 }
 ext.login_client_id = properties.getProperty('com.storyous.delivery.LoginClientId')
-ext.login_client_secret = properties.getProperty('com.storyous.delivery.LoginClientSecret')

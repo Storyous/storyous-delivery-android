@@ -1,0 +1,9 @@
+// This is an empty fallback build file which is used
+// to avoid gradle errors when building
+// from android-libraries jitpack build.
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion compile_sdk_version
+}

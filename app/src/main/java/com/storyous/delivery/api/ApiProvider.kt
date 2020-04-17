@@ -3,10 +3,11 @@ package com.storyous.delivery.api
 import android.content.Context
 import com.google.gson.Gson
 import com.storyous.delivery.BuildConfig
+import com.storyous.delivery.common.api.DeliveryErrorConverterWrapper
+import com.storyous.delivery.common.api.DeliveryService
 import com.storyous.delivery.common.api.model.DeliveryErrorResponse
 import com.storyous.storyouspay.api.AuthHeaderProvider
 import com.storyous.storyouspay.api.AuthInterceptor
-import com.storyous.storyouspay.api.DeliveryService
 import com.storyous.storyouspay.api.PosErrorConverterWrapper
 import okhttp3.Cache
 import kotlin.reflect.KClass
@@ -15,7 +16,10 @@ import kotlin.reflect.KClass
  * Responsible for create and update retrofit apis
  */
 @Suppress("TooManyFunctions")
-class ApiProvider(context: Context, private val authInterceptor: AuthInterceptor = AuthInterceptor()) {
+class ApiProvider(
+    context: Context,
+    private val authInterceptor: AuthInterceptor = AuthInterceptor()
+) {
 
     @Suppress("MagicNumber")
     private val cacheSize: Long = 10 * 1024 * 1024 // 10 MB

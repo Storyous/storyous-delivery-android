@@ -1,3 +1,23 @@
 rootProject.name='Storyous Delivery'
 include ':app'
 include ':design'
+
+def libModules = ['common_utils', 'delivery']
+
+// include all defined libModules from android-libraries project directory
+
+Properties properties = new Properties()
+def propertiesFile = new File('local.properties')
+if (propertiesFile.exists()) {
+    properties.load(propertiesFile.newDataInputStream())
+}
+def libDir = properties.getProperty('com.storyous.androidLibrariesDir')
+if (libDir == null || libDir.isEmpty()) libDir = "."
+
+for (libModule in libModules) {
+    include ':' + libModule
+    def directory = libDir + '/' + libModule
+    if (new File(directory + '/build.gradle').exists()) {
+        project(':' + libModule).projectDir = new File(directory)
+    }
+}

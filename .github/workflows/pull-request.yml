@@ -19,7 +19,7 @@ jobs:
       - name: Detekt check
         run: bash ./gradlew detekt --stacktrace
       - name: Unit tests
-        run: bash ./gradlew test --stacktrace
+        run: bash ./gradlew testDebugUnitTest --stacktrace
 
   apk:
     name: Generate APK

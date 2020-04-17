@@ -52,7 +52,6 @@ open class AuthRepository(private val context: Context) :
             loginService().authorize(
                 "authorization_code",
                 BuildConfig.LOGIN_CLIENT_ID,
-                BuildConfig.LOGIN_CLIENT_SECRET,
                 code
             ).string()
         } catch (ex: HttpException) {

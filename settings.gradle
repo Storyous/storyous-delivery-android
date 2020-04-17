@@ -1,3 +1,6 @@
 rootProject.name='Storyous Delivery'
 include ':app'
 include ':design'
+include ':common_utils'
+include ':delivery'
+

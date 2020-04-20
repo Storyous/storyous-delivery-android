@@ -3,6 +3,7 @@ package com.storyous.delivery
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDexApplication
+import com.storyous.delivery.common.DeliveryConfiguration
 import com.storyous.delivery.common.repositories.DeliveryRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -27,6 +28,7 @@ class App : MultiDexApplication() {
         }
 
         KoinJavaComponent.get(DeliveryRepository::class.java).apply {
+            DeliveryConfiguration.deliveryRepository = this
             newDeliveriesToHandle.observe(
                 ProcessLifecycleOwner.get(),
                 Observer {

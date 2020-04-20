@@ -9,7 +9,7 @@ import com.storyous.storyouspay.api.AuthInterceptor
 import org.koin.dsl.module
 
 val applicationModule = module {
-    single { AuthRepository(get()) }
+    single(createdAtStart = true) { AuthRepository(get()) }
     single { AuthInterceptor() }
     single { ApiProvider(get(), get()) }
     single {

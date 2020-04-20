@@ -7,6 +7,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.storyous.delivery.api.Place
+import com.storyous.delivery.common.DeliveryActivity
+import com.storyous.delivery.common.DeliveryConfiguration
+import com.storyous.delivery.common.PlaceInfo
+import com.storyous.delivery.common.repositories.DeliveryRepository
 import com.storyous.delivery.repositories.AuthRepository
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
@@ -16,6 +20,7 @@ import org.koin.android.ext.android.inject
 class MainActivity : AppCompatActivity() {
 
     private val authRepository: AuthRepository by inject()
+    private val deliveryRepository: DeliveryRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +45,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun onPlaceResult(place: Place) {
         Toast.makeText(this, "Logged into place: $place", Toast.LENGTH_LONG).show()
+        DeliveryConfiguration.deliveryRepository = deliveryRepository
+        DeliveryConfiguration.placeInfo = PlaceInfo(place.placeId, place.merchantId, true)
+        DeliveryActivity.launch(this)
     }
 
     private fun onLoginError(error: Error) {

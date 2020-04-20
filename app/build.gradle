@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: "kotlin-kapt"
 apply plugin: 'com.google.gms.google-services'
 
 repositories {
@@ -22,9 +23,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "DELIVERY_API_URL", "\"https://api.storyous.com/\""
-        buildConfigField "String", "LOGIN_API_URL", "\"https://login.storyous.com/api/\""
-        buildConfigField "String", "LOGIN_URL", "\"https://login.storyous.com/api/auth/authorize?client_id=%1\$s&redirect_uri=%2\$s&response_type=code\""
+        buildConfigField "String", "DELIVERY_API_URL", "\"https://api.$root_url/\""
+        buildConfigField "String", "LOGIN_API_URL", "\"https://login.$root_url/api/\""
+        buildConfigField "String", "LOGIN_URL", "\"https://login.$root_url/api/auth/authorize?client_id=%1\$s&redirect_uri=%2\$s&response_type=code\""
         buildConfigField "String", "LOGIN_CLIENT_ID", "\"$login_client_id\""
         buildConfigField "String", "LOGIN_REDIRECT_URL", "\"storyous://login\""
         buildConfigField "String", "LOGIN_ORIGIN_HEADER", "\"storyous://login\""
@@ -105,4 +106,11 @@ dependencies {
     implementation "org.koin:koin-androidx-fragment:$koin_version"
 
     implementation "androidx.multidex:multidex:$multidex_version"
+
+    // DB persistence
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
 }

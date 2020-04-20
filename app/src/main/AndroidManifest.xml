@@ -23,6 +23,20 @@
         </activity>
 
         <activity android:name=".common.DeliveryActivity" />
+
+        <receiver
+            android:name="com.storyous.commonutils.InitAlarmOnBootReceiver"
+            android:directBootAware="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.storyous.commonutils.WakeUpReceiver" />
+
+        <receiver android:name=".common.DownloadDeliveryReceiver" />
     </application>
 
 </manifest>

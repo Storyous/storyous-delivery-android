@@ -6,9 +6,11 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.storyous.commonutils.AlarmUtils
 import com.storyous.delivery.api.Place
 import com.storyous.delivery.common.DeliveryActivity
 import com.storyous.delivery.common.DeliveryConfiguration
+import com.storyous.delivery.common.DownloadDeliveryReceiver
 import com.storyous.delivery.common.PlaceInfo
 import com.storyous.delivery.common.repositories.DeliveryRepository
 import com.storyous.delivery.repositories.AuthRepository
@@ -48,6 +50,13 @@ class MainActivity : AppCompatActivity() {
         DeliveryConfiguration.deliveryRepository = deliveryRepository
         DeliveryConfiguration.placeInfo = PlaceInfo(place.placeId, place.merchantId, true)
         DeliveryActivity.launch(this)
+        AlarmUtils.keepWakeUp(this)
+        AlarmUtils.setRepeatingAlarm(
+            this,
+            DownloadDeliveryReceiver::class,
+            0,
+            AlarmUtils.MIN_INTERVAL
+        )
     }
 
     private fun onLoginError(error: Error) {

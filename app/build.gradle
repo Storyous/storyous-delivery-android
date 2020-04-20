@@ -41,6 +41,7 @@ android {
             matchingFallbacks = ['release']
         }
         local {
+            initWith debug
             matchingFallbacks = ['debug']
         }
     }
@@ -89,6 +90,7 @@ dependencies {
 
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
 
     // Logging
     implementation "com.jakewharton.timber:timber:$timber_version"
@@ -115,6 +117,7 @@ dependencies {
     implementation "androidx.multidex:multidex:$multidex_version"
 
     // DB persistence
+    // DEPRECATED delivery module should create his own db
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 

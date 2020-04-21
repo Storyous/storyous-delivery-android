@@ -20,7 +20,7 @@ android {
         targetSdkVersion target_sdk_version
         multiDexEnabled true
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "DELIVERY_API_URL", "\"https://api.$root_url/\""

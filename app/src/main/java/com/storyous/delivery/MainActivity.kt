@@ -6,9 +6,10 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.storyous.delivery.api.Place
+import com.storyous.commonutils.AlarmUtils
 import com.storyous.delivery.common.DeliveryActivity
 import com.storyous.delivery.common.DeliveryConfiguration
+import com.storyous.delivery.common.DownloadDeliveryReceiver
 import com.storyous.delivery.common.PlaceInfo
 import com.storyous.delivery.common.repositories.DeliveryRepository
 import com.storyous.delivery.repositories.AuthRepository
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        authRepository.place.observe(this, Observer { place -> onPlaceResult(place) })
+        authRepository.placeLive.observe(this, Observer { place -> onPlaceResult(place) })
         authRepository.loginError.observe(this, Observer { error -> onLoginError(error) })
 
         webview.webViewClient = object : WebViewClient() {
@@ -38,21 +39,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        authRepository.loginUrl?.let { url ->
+        authRepository.loginUrl.let { url ->
             webview.loadUrl(url, mapOf("credentials" to "include"))
         }
     }
 
-    private fun onPlaceResult(place: Place) {
+    private fun onPlaceResult(place: PlaceInfo) {
         Toast.makeText(this, "Logged into place: $place", Toast.LENGTH_LONG).show()
-        DeliveryConfiguration.deliveryRepository = deliveryRepository
-        DeliveryConfiguration.placeInfo = PlaceInfo(place.placeId, place.merchantId, true)
         DeliveryActivity.launch(this)
+        AlarmUtils.keepWakeUp(this)
+        AlarmUtils.setRepeatingAlarm(
+            this,
+            DownloadDeliveryReceiver::class,
+            0,
+            AlarmUtils.MIN_INTERVAL
+        )
     }
 
     private fun onLoginError(error: Error) {
         Toast.makeText(this, error.message, Toast.LENGTH_LONG).show()
-        authRepository.loginUrl?.let { url ->
+        authRepository.loginUrl.let { url ->
             webview.loadUrl(url, mapOf("credentials" to "include"))
         }
     }

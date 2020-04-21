@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Storyous Delivery</string>
+    <string name="notification_new_order">You received new order from %s.</string>
 </resources>

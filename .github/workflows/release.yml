@@ -39,7 +39,7 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v1
         with:
-          name: app
+          name: apk
           path: app/build/outputs/apk/release/app-release-signed.apk
       - name: Build bundle AAB
         run: bash ./gradlew bundleRelease --stacktrace
@@ -54,5 +54,5 @@ jobs:
       - name: Upload AAB
         uses: actions/upload-artifact@v1
         with:
-          name: app
+          name: aab
           path: app/build/outputs/bundle/release/app-release-signed.aab

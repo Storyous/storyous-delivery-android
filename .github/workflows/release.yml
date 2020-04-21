@@ -41,3 +41,18 @@ jobs:
         with:
           name: app
           path: app/build/outputs/apk/release/app-release-signed.apk
+      - name: Build bundle AAB
+        run: bash ./gradlew bundle --stacktrace
+      - name: Sign release AAB
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/bundle/release/
+          signingKeyBase64: ${{ secrets.KEY_JKS }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+      - name: Upload AAB
+        uses: actions/upload-artifact@v1
+        with:
+          name: app
+          path: app/build/outputs/bundle/release/app-release-signed.aab

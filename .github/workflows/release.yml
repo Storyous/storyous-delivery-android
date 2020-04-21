@@ -15,11 +15,11 @@ jobs:
         with:
           java-version: 1.8
       - name: write client ID into local.properties
-          uses: christian-draeger/write-properties@1.0.1
-          with:
-            path: './local.properties'
-            property: 'com.storyous.delivery.LoginClientId'
-            value: ${{ secrets.LOGIN_CLIENT_ID }}
+        uses: christian-draeger/write-properties@1.0.1
+        with:
+          path: './local.properties'
+          property: 'com.storyous.delivery.LoginClientId'
+          value: ${{ secrets.LOGIN_CLIENT_ID }}
       - name: write client secret into local.properties
         uses: christian-draeger/write-properties@1.0.1
         with:

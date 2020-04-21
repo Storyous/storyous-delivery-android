@@ -42,7 +42,7 @@ jobs:
           name: app
           path: app/build/outputs/apk/release/app-release-signed.apk
       - name: Build bundle AAB
-        run: bash ./gradlew bundle --stacktrace
+        run: bash ./gradlew bundleRelease --stacktrace
       - name: Sign release AAB
         uses: r0adkll/sign-android-release@v1
         with:

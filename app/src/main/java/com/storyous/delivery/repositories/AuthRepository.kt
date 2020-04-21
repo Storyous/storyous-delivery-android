@@ -96,7 +96,7 @@ class AuthRepository(
         }.onFailure {
             Timber.e(it, "HTTP error while getting places")
         }.getOrNull()?.data?.firstOrNull {
-            it.integrations.isNotEmpty() && it.placeId == "5bd2d393bf21352ecc7f28d4" // STOPSHIP
+            it.integrations.isNotEmpty()
         }
 
         if (newPlace == null) {

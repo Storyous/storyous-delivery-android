@@ -14,12 +14,10 @@ import com.storyous.delivery.api.LoginService
 import com.storyous.delivery.api.Place
 import com.storyous.delivery.common.DeliveryConfiguration
 import com.storyous.delivery.common.PlaceInfo
-import com.storyous.delivery.common.repositories.DeliveryRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.get
-import org.koin.java.KoinJavaComponent.inject
 import retrofit2.HttpException
 import timber.log.Timber
 import java.net.URLEncoder
@@ -35,7 +33,6 @@ class AuthRepository(
         private const val SP_KEY_MERCHANT_ID = "merchantId"
     }
 
-    private val deliveryRepository: DeliveryRepository by inject(DeliveryRepository::class.java)
     private val sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
     val loginResult = MutableLiveData<LoginResult>()
     val loginUrl = String.format(
@@ -98,20 +95,29 @@ class AuthRepository(
         }
 
 
-        val newPlace = runCatching {
+        val places = runCatching {
             withContext(provider.IO) {
                 loginService().getPlaces()
             }
         }.onFailure {
             Timber.e(it, "HTTP error while getting places")
-        }.getOrNull()?.data?.firstOrNull {
-            it.integrations.isNotEmpty()
+        }.getOrNull()?.data
+
+        if ((places?.size ?: 0) > 1) {
+            loginResult.value = LoginError(LoginError.ERROR_TOO_MANY_PLACES)
+            return@launch
         }
+
+        val newPlace = places?.firstOrNull { it.integrations.isNotEmpty() }
 
         if (newPlace == null) {
             loginResult.value = LoginError(LoginError.ERROR_NO_PLACE)
         } else {
             onLoginSuccess(newPlace, token)
+        }
+
+        if (loginResult.value is LoginError) {
+            clear()
         }
     }
 
@@ -129,5 +135,11 @@ class AuthRepository(
         DeliveryConfiguration.placeInfo = place
         loginResult.value = LoginSuccess(place)
         println("FIRST PLACE: $place")
+    }
+
+    fun clear() {
+        get(ApiProvider::class.java).onCredentialsChanged(null)
+        sp.edit().clear().apply()
+        loginResult.value = null
     }
 }

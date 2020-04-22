@@ -21,6 +21,7 @@ data class LoginError(val errorCode: Int) : LoginResult {
         const val ERR_AUTH_BAD_REQUEST = 466
         const val ERROR_NO_TOKEN = 1001
         const val ERROR_NO_PLACE = 1002
+        const val ERROR_TOO_MANY_PLACES = 1003
     }
 
     fun isRecoverable(): Boolean {

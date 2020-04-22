@@ -3,6 +3,7 @@ package com.storyous.delivery
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDexApplication
+import com.facebook.stetho.Stetho
 import com.storyous.delivery.common.DeliveryConfiguration
 import com.storyous.delivery.common.repositories.DeliveryRepository
 import com.storyous.delivery.repositories.AuthRepository
@@ -25,6 +26,7 @@ class App : MultiDexApplication() {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
+            Stetho.initializeWithDefaults(this);
         }
 
         startKoin {

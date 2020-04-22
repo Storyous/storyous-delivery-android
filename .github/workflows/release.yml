@@ -21,22 +21,19 @@ jobs:
           property: 'com.storyous.delivery.LoginClientId'
           value: ${{ secrets.LOGIN_CLIENT_ID }}
       - name: Build release APK
-        run: bash ./gradlew assembleRelease --stacktrace
-      - name: Sign release APK
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: app/build/outputs/apk/release/
-          signingKeyBase64: ${{ secrets.KEY_JKS }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        shell: bash
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run:
+          echo "$KEY_JKS" > app/keystore.b64 && base64 --decode app/keystore.b64 > app/keystore.jks && pwd && ./gradlew assembleRelease bundleRelease --stacktrace
       - name: Upload APK
         uses: actions/upload-artifact@v1
         with:
           name: apk
-          path: app/build/outputs/apk/release/app-release-signed.apk
-      - name: Build bundle AAB
-        run: bash ./gradlew bundleRelease --stacktrace
+          path: app/build/outputs/apk/release/app-release.apk
       - name: Upload AAB
         uses: actions/upload-artifact@v1
         with:

@@ -37,12 +37,6 @@ jobs:
           path: './local.properties'
           property: 'com.storyous.delivery.LoginClientId'
           value: ${{ secrets.LOGIN_CLIENT_ID }}
-      - name: write client secret into local.properties
-        uses: christian-draeger/write-properties@1.0.1
-        with:
-          path: './local.properties'
-          property: 'com.storyous.delivery.LoginClientSecret'
-          value: ${{ secrets.LOGIN_CLIENT_SECRET }}
       - name: Build debug APK
         run: bash ./gradlew assembleDebug --stacktrace
       - name: Upload APK

@@ -3,12 +3,11 @@ package com.storyous.delivery
 import android.os.Bundle
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.storyous.commonutils.AlarmUtils
 import com.storyous.delivery.common.DeliveryActivity
-import com.storyous.delivery.common.DeliveryConfiguration
 import com.storyous.delivery.common.DownloadDeliveryReceiver
 import com.storyous.delivery.common.PlaceInfo
 import com.storyous.delivery.common.repositories.DeliveryRepository
@@ -28,8 +27,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        authRepository.placeLive.observe(this, Observer { place -> onPlaceResult(place) })
-        authRepository.loginError.observe(this, Observer { error -> onLoginError(error) })
+        authRepository.loginResult.observe(this, Observer { result -> onLoginResult(result) })
 
         webview.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
@@ -39,9 +37,17 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
         }
+    }
 
-        authRepository.loginUrl.let { url ->
-            webview.loadUrl(url, mapOf("credentials" to "include"))
+    override fun onStart() {
+        super.onStart()
+        reload()
+    }
+
+    private fun onLoginResult(result: LoginResult) {
+        when (result) {
+            is LoginSuccess -> onPlaceResult(result.placeInfo)
+            is LoginError -> onLoginError(result)
         }
     }
 
@@ -57,8 +63,32 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun onLoginError(error: Error) {
-        Toast.makeText(this, error.message, Toast.LENGTH_LONG).show()
+    private fun onLoginError(error: LoginError) {
+        val message = getString(
+            if (error.isRecoverable()) {
+                R.string.error_recoverable
+            } else {
+                R.string.error_fatal
+            }, error.errorCode
+        )
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.error_header)
+            .setMessage(message)
+            .setPositiveButton(R.string.accept_order) { dialog, _ ->
+                if (error.isRecoverable()) {
+                    reload()
+                } else {
+                    dialog.dismiss()
+                    finish()
+                }
+            }
+            .show()
+    }
+
+    private fun reload() {
+        webview.clearCache(false)
+        webview.clearFormData()
         authRepository.loginUrl.let { url ->
             webview.loadUrl(url, mapOf("credentials" to "include"))
         }

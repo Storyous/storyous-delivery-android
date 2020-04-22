@@ -6,6 +6,9 @@ import com.storyous.commonutils.CoroutineProviderScope
 import com.storyous.commonutils.onNonNull
 import com.storyous.commonutils.provider
 import com.storyous.delivery.BuildConfig
+import com.storyous.delivery.LoginError
+import com.storyous.delivery.LoginResult
+import com.storyous.delivery.LoginSuccess
 import com.storyous.delivery.api.ApiProvider
 import com.storyous.delivery.api.LoginService
 import com.storyous.delivery.api.Place
@@ -17,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.get
 import org.koin.java.KoinJavaComponent.inject
+import retrofit2.HttpException
 import timber.log.Timber
 import java.net.URLEncoder
 
@@ -33,8 +37,7 @@ class AuthRepository(
 
     private val deliveryRepository: DeliveryRepository by inject(DeliveryRepository::class.java)
     private val sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
-    val placeLive = MutableLiveData<PlaceInfo>()
-    val loginError = MutableLiveData<Error>()
+    val loginResult = MutableLiveData<LoginResult>()
     val loginUrl = String.format(
         BuildConfig.LOGIN_URL,
         URLEncoder.encode(BuildConfig.LOGIN_CLIENT_ID, "UTF-8"),
@@ -59,9 +62,9 @@ class AuthRepository(
     fun interceptLogin(url: String): Boolean {
         Timber.d("Intercepting URL: $url")
         return when (true) {
-            Regex("error=([^&]+)").find(url)?.groups?.get(1)?.value?.let {
+            Regex("auth-error\\?error=([^&]+)").find(url)?.groups?.get(1)?.value?.let {
                 Timber.e("Login failed with error: $it")
-                loginError.value = Error(it)
+                loginResult.value = LoginError(it)
                 true
             } -> true
             Regex("code=([a-f0-9]+)").find(url)?.groups?.get(1)?.value?.let {
@@ -83,10 +86,16 @@ class AuthRepository(
             }
         }.onFailure {
             Timber.e(it, "Error on authorization exchange")
-            loginError.value = Error("No token, no fun")
+            if (it is HttpException) {
+                loginResult.value = LoginError(it.code())
+            } else {
+                loginResult.value = LoginError(LoginError.ERROR_NO_TOKEN)
+            }
         }.onSuccess {
             get(ApiProvider::class.java).onCredentialsChanged(it)
-        }.getOrThrow()
+        }.getOrElse {
+            return@launch
+        }
 
 
         val newPlace = runCatching {
@@ -100,7 +109,7 @@ class AuthRepository(
         }
 
         if (newPlace == null) {
-            loginError.value = Error("No place with integration, no fun")
+            loginResult.value = LoginError(LoginError.ERROR_NO_PLACE)
         } else {
             onLoginSuccess(newPlace, token)
         }
@@ -118,7 +127,7 @@ class AuthRepository(
 
     private fun handlePlace(place: PlaceInfo) {
         DeliveryConfiguration.placeInfo = place
-        placeLive.value = place
+        loginResult.value = LoginSuccess(place)
         println("FIRST PLACE: $place")
     }
 }

@@ -1,5 +1,7 @@
 package com.storyous.delivery
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -10,22 +12,29 @@ import com.storyous.commonutils.AlarmUtils
 import com.storyous.delivery.common.DeliveryActivity
 import com.storyous.delivery.common.DownloadDeliveryReceiver
 import com.storyous.delivery.common.PlaceInfo
-import com.storyous.delivery.common.repositories.DeliveryRepository
 import com.storyous.delivery.repositories.AuthRepository
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 
 @Suppress("TooManyFunctions")
-class MainActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     private val authRepository: AuthRepository by inject()
-    private val deliveryRepository: DeliveryRepository by inject()
+
+    companion object {
+
+        fun launch(context: Context) {
+            context.startActivity(Intent(context, LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            })
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_login)
 
         authRepository.loginResult.observe(this, Observer { result -> onLoginResult(result) })
 
@@ -44,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         reload()
     }
 
-    private fun onLoginResult(result: LoginResult) {
+    private fun onLoginResult(result: LoginResult?) {
         when (result) {
             is LoginSuccess -> onPlaceResult(result.placeInfo)
             is LoginError -> onLoginError(result)

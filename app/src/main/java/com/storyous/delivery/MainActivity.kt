@@ -15,6 +15,7 @@ import com.storyous.delivery.common.repositories.DeliveryRepository
 import com.storyous.delivery.repositories.AuthRepository
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 
 @Suppress("TooManyFunctions")
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onPlaceResult(place: PlaceInfo) {
-        Toast.makeText(this, "Logged into place: $place", Toast.LENGTH_LONG).show()
+        Timber.i("Logged into place: $place")
         DeliveryActivity.launch(this)
         AlarmUtils.keepWakeUp(this)
         AlarmUtils.setRepeatingAlarm(

@@ -109,7 +109,6 @@ class AuthRepository(
         }
 
         val newPlace = places?.firstOrNull { it.integrations.isNotEmpty() }
-
         if (newPlace == null) {
             loginResult.value = LoginError(LoginError.ERROR_NO_PLACE)
         } else {

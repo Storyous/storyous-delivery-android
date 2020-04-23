@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">Storyous Delivery</string>
     <string name="notification_new_order">You received new order from %s.</string>
-    <string name="error_header">Error</string>
+    <string name="error_header">Error %d</string>
     <string name="error_recoverable">Error when trying to log in has occured. Error code was %s. Please try again.</string>
     <string name="error_fatal">Unrecoverable error when trying to log in has occured. Error code was %s. Application will be closed.</string>
     <string name="logout">Logout</string>
+    <string name="error_not_supported_multiple_places">Multiple places unde one merchant is already not supported. This feature will come soon.</string>
+    <string name="understand">I understand</string>
 </resources>

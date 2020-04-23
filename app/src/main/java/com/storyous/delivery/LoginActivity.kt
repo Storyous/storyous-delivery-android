@@ -96,7 +96,10 @@ class LoginActivity : AppCompatActivity() {
         webview.clearCache(false)
         webview.clearFormData()
         viewModel.loginUrl.let { url ->
-            webview.loadUrl(url, mapOf("credentials" to "include"))
+            webview.loadUrl(url, mapOf(
+                "credentials" to "include",
+                "Accept-Language" to LocaleUtil().getAcceptedLanguageHeaderValue()
+            ))
         }
     }
 }

@@ -94,7 +94,6 @@ class AuthRepository(
             return@launch
         }
 
-
         val places = runCatching {
             withContext(provider.IO) {
                 loginService().getPlaces()

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -12,16 +13,13 @@ import com.storyous.commonutils.AlarmUtils
 import com.storyous.delivery.common.DeliveryActivity
 import com.storyous.delivery.common.DownloadDeliveryReceiver
 import com.storyous.delivery.common.PlaceInfo
-import com.storyous.delivery.repositories.AuthRepository
 import kotlinx.android.synthetic.main.activity_login.*
-import org.koin.android.ext.android.inject
 import timber.log.Timber
-
 
 @Suppress("TooManyFunctions")
 class LoginActivity : AppCompatActivity() {
 
-    private val authRepository: AuthRepository by inject()
+    private val viewModel: LoginViewModel by viewModels()
 
     companion object {
 
@@ -36,11 +34,11 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        authRepository.loginResult.observe(this, Observer { result -> onLoginResult(result) })
+        viewModel.loginResult.observe(this, Observer { result -> onLoginResult(result) })
 
         webview.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                if (!authRepository.interceptLogin(url)) {
+                if (!viewModel.interceptLogin(url)) {
                     view.loadUrl(url)
                 }
                 return true
@@ -83,6 +81,7 @@ class LoginActivity : AppCompatActivity() {
             .setTitle(getString(R.string.error_header, error.errorCode))
             .setMessage(messageResId)
             .setPositiveButton(R.string.understand) { dialog, _ ->
+                viewModel.errorConsumed()
                 if (error.isRecoverable()) {
                     reload()
                 } else {
@@ -96,7 +95,7 @@ class LoginActivity : AppCompatActivity() {
     private fun reload() {
         webview.clearCache(false)
         webview.clearFormData()
-        authRepository.loginUrl.let { url ->
+        viewModel.loginUrl.let { url ->
             webview.loadUrl(url, mapOf("credentials" to "include"))
         }
     }

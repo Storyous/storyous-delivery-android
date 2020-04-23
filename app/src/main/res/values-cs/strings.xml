@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Storyous Delivery</string>
+    <string name="notification_new_order">Přišla nová objednávka od %s.</string>
+    <string name="error_header">Chyba %d</string>
+    <string name="error_recoverable">Vyskytla se chyba při přihlášení. Zkuste to za chvíli znovu.</string>
+    <string name="error_fatal">Neznámá chyba během přihlašování. Aplikace není schopná pokračovat a bude vypnuta.</string>
+    <string name="logout">Odhlásit</string>
+    <string name="error_not_supported_multiple_places">Snažíte se přihlásit k obchodníkovi s více podniky. Tato funkce zatím není podporována. Vydržte prosím v přízni, v nejbližších aktualizacích vám tuto funkci zpřístupníme. Děkujeme za pochopení</string>
+    <string name="understand">Rozumím</string>
+</resources>

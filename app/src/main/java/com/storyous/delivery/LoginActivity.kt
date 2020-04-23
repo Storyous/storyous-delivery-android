@@ -73,18 +73,16 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun onLoginError(error: LoginError) {
-        val message = getString(
-            if (error.isRecoverable()) {
-                R.string.error_recoverable
-            } else {
-                R.string.error_fatal
-            }, error.errorCode
-        )
+        val messageResId = when {
+            error.errorCode == LoginError.ERROR_TOO_MANY_PLACES -> R.string.error_not_supported_multiple_places
+            error.isRecoverable() -> R.string.error_recoverable
+            else -> R.string.error_fatal
+        }
 
         MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.error_header)
-            .setMessage(message)
-            .setPositiveButton(R.string.accept_order) { dialog, _ ->
+            .setTitle(getString(R.string.error_header, error.errorCode))
+            .setMessage(messageResId)
+            .setPositiveButton(R.string.understand) { dialog, _ ->
                 if (error.isRecoverable()) {
                     reload()
                 } else {

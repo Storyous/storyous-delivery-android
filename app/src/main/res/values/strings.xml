@@ -5,6 +5,6 @@
     <string name="error_recoverable">Error when trying to log in has occured. Error code was %s. Please try again.</string>
     <string name="error_fatal">Unrecoverable error when trying to log in has occured. Error code was %s. Application will be closed.</string>
     <string name="logout">Logout</string>
-    <string name="error_not_supported_multiple_places">Multiple places unde one merchant is already not supported. This feature will come soon.</string>
+    <string name="error_not_supported_multiple_places">Multiple places under one merchant are not yet supported. This feature will be available soon.</string>
     <string name="understand">I understand</string>
 </resources>

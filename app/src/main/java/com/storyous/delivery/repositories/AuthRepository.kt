@@ -1,6 +1,7 @@
 package com.storyous.delivery.repositories
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import com.storyous.commonutils.CoroutineProviderScope
 import com.storyous.commonutils.onNonNull
@@ -17,14 +18,13 @@ import com.storyous.delivery.common.PlaceInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent.get
 import retrofit2.HttpException
 import timber.log.Timber
 import java.net.URLEncoder
 
-class AuthRepository(
-    context: Context
-) : CoroutineScope by CoroutineProviderScope() {
+class AuthRepository : CoroutineScope by CoroutineProviderScope() {
 
     companion object {
         private const val SP_NAME = "com.storyous.delivery.auth"
@@ -33,7 +33,9 @@ class AuthRepository(
         private const val SP_KEY_MERCHANT_ID = "merchantId"
     }
 
-    private val sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
+    private val sp = get(SharedPreferences::class.java) {
+        parametersOf(SP_NAME, Context.MODE_PRIVATE)
+    }
     val loginResult = MutableLiveData<LoginResult>()
     val loginUrl = String.format(
         BuildConfig.LOGIN_URL,

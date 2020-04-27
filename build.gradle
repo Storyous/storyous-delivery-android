@@ -41,7 +41,7 @@ buildscript {
     ext.truetime_version = "3.4"
     ext.fragments_ktx_version = "1.2.4"
     ext.room_version = '2.2.5'
-    ext.storyous_libraries_version = '0.14'
+    ext.storyous_libraries_version = '0.15'
     ext.koin_version = '2.1.5'
     ext.multidex_version = "2.0.1"
 
@@ -51,7 +51,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.2'
+        classpath 'com.android.tools.build:gradle:3.6.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.3'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'

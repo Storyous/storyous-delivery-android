@@ -7,4 +7,5 @@
     <string name="logout">Logout</string>
     <string name="error_not_supported_multiple_places">Multiple places under one merchant are not yet supported. This feature will be available soon.</string>
     <string name="understand">I understand</string>
+    <string name="choose_place">You have access to more than one place. Please choose one:</string>
 </resources>

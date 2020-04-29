@@ -7,6 +7,7 @@ import com.storyous.commonutils.onNonNull
 import com.storyous.commonutils.provider
 import com.storyous.delivery.BuildConfig
 import com.storyous.delivery.LoginError
+import com.storyous.delivery.LoginPlaceChoice
 import com.storyous.delivery.LoginResult
 import com.storyous.delivery.LoginSuccess
 import com.storyous.delivery.api.ApiProvider
@@ -102,16 +103,10 @@ class AuthRepository(
             Timber.e(it, "HTTP error while getting places")
         }.getOrNull()?.data
 
-        if ((places?.size ?: 0) > 1) {
-            loginResult.value = LoginError(LoginError.ERROR_TOO_MANY_PLACES)
-            return@launch
-        }
-
-        val newPlace = places?.firstOrNull { it.integrations.isNotEmpty() }
-        if (newPlace == null) {
-            loginResult.value = LoginError(LoginError.ERROR_NO_PLACE)
-        } else {
-            onLoginSuccess(newPlace, token)
+        when {
+            places.isNullOrEmpty() -> loginResult.value = LoginError(LoginError.ERROR_NO_PLACE)
+            places.size == 1 -> onLoginSuccess(places[0], token)
+            else -> loginResult.value = LoginPlaceChoice(places, token)
         }
 
         if (loginResult.value is LoginError) {
@@ -139,5 +134,9 @@ class AuthRepository(
         get(ApiProvider::class.java).onCredentialsChanged(null)
         sp.edit().clear().apply()
         loginResult.value = null
+    }
+
+    fun placeChoiceDone(place: Place, token: String) {
+        onLoginSuccess(place, token)
     }
 }

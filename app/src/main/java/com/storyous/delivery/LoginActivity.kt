@@ -5,11 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.storyous.commonutils.AlarmUtils
+import com.storyous.delivery.api.Place
 import com.storyous.delivery.common.DeliveryActivity
 import com.storyous.delivery.common.DownloadDeliveryReceiver
 import com.storyous.delivery.common.PlaceInfo
@@ -53,6 +55,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun onLoginResult(result: LoginResult?) {
         when (result) {
+            is LoginPlaceChoice -> onPlaceChoice(result.places, result.token)
             is LoginSuccess -> onPlaceResult(result.placeInfo)
             is LoginError -> onLoginError(result)
         }
@@ -79,7 +82,7 @@ class LoginActivity : AppCompatActivity() {
 
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.error_header, error.errorCode))
-            .setMessage(messageResId)
+            .setMessage(getString(messageResId, error.errorCode))
             .setPositiveButton(R.string.understand) { dialog, _ ->
                 viewModel.errorConsumed()
                 if (error.isRecoverable()) {
@@ -96,10 +99,29 @@ class LoginActivity : AppCompatActivity() {
         webview.clearCache(false)
         webview.clearFormData()
         viewModel.loginUrl.let { url ->
-            webview.loadUrl(url, mapOf(
-                "credentials" to "include",
-                "Accept-Language" to LocaleUtil().getAcceptedLanguageHeaderValue()
-            ))
+            webview.loadUrl(
+                url, mapOf(
+                    "credentials" to "include",
+                    "Accept-Language" to LocaleUtil().getAcceptedLanguageHeaderValue()
+                )
+            )
         }
+    }
+
+    private fun onPlaceChoice(places: List<Place>, token: String) {
+        val adapter = ArrayAdapter(
+            this,
+            R.layout.choose_place_singlechoice,
+            places.map { it.name }.toTypedArray()
+        )
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.choose_place))
+            .setSingleChoiceItems(adapter, -1) { dialog, which ->
+                viewModel.placeChoiceDone(places[which], token)
+                dialog.dismiss()
+            }
+            .setOnCancelListener { reload() }
+            .setNegativeButton(R.string.cancel) { _, _ -> reload() }
+            .show()
     }
 }

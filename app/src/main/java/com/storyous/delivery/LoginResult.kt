@@ -1,13 +1,13 @@
 package com.storyous.delivery
 
-import com.storyous.delivery.api.Place
+import com.storyous.delivery.api.Merchant
 import com.storyous.delivery.common.PlaceInfo
 
 interface LoginResult
 
 data class LoginSuccess(val placeInfo: PlaceInfo) : LoginResult
 
-data class LoginPlaceChoice(val places: List<Place>, val token: String) : LoginResult
+data class LoginPlaceChoice(val merchant: Merchant, val token: String) : LoginResult
 
 data class LoginError(val errorCode: Int) : LoginResult {
     constructor(errorCode: String) : this(errorCode.toIntOrNull() ?: 0)

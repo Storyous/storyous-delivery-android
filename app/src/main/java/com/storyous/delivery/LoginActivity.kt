@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.storyous.commonutils.AlarmUtils
-import com.storyous.delivery.api.Place
+import com.storyous.delivery.api.Merchant
 import com.storyous.delivery.common.DeliveryActivity
 import com.storyous.delivery.common.DownloadDeliveryReceiver
 import com.storyous.delivery.common.PlaceInfo
@@ -55,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun onLoginResult(result: LoginResult?) {
         when (result) {
-            is LoginPlaceChoice -> onPlaceChoice(result.places, result.token)
+            is LoginPlaceChoice -> onPlaceChoice(result.merchant, result.token)
             is LoginSuccess -> onPlaceResult(result.placeInfo)
             is LoginError -> onLoginError(result)
         }
@@ -108,16 +108,20 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun onPlaceChoice(places: List<Place>, token: String) {
+    private fun onPlaceChoice(merchant: Merchant, token: String) {
         val adapter = ArrayAdapter(
             this,
             R.layout.choose_place_singlechoice,
-            places.map { it.name }.toTypedArray()
+            merchant.places.map { it.name }.toTypedArray()
         )
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.choose_place))
             .setSingleChoiceItems(adapter, -1) { dialog, which ->
-                viewModel.placeChoiceDone(places[which], token)
+                viewModel.placeChoiceDone(
+                    merchant.merchantId,
+                    merchant.places[which].placeId,
+                    token
+                )
                 dialog.dismiss()
             }
             .setOnCancelListener { reload() }

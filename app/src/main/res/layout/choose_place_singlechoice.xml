@@ -6,9 +6,9 @@
     android:ellipsize="marquee"
     android:gravity="center_vertical"
     android:minHeight="@dimen/cancel_reason_choice_min_height"
-    android:paddingStart="@dimen/offset_24dp"
-    android:paddingLeft="@dimen/offset_24dp"
-    android:paddingEnd="@dimen/offset_24dp"
-    android:paddingRight="@dimen/offset_24dp"
+    android:paddingStart="@dimen/margin_24dp"
+    android:paddingLeft="@dimen/margin_24dp"
+    android:paddingEnd="@dimen/margin_24dp"
+    android:paddingRight="@dimen/margin_24dp"
     android:textAppearance="?android:attr/textAppearanceMedium"
     android:textColor="?android:attr/textColorAlertDialogListItem" />

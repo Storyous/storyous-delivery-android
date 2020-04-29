@@ -10,24 +10,18 @@ data class ErrorResponse(val name: String,
     }
 }
 
-data class BaseDataResponse<T>(val data: T, val lastModificationAt: String? = null)
-
-data class Place(
-    val name: String,
+data class Merchant(
     val merchantId: String,
-    val address: String,
-    val city: String,
-    val zip: String,
-    val seasonal: Boolean,
-    val placeId: String,
-    val integrations: List<Integration>
+    val name: String,
+    val businessId: String,
+    val isVatPayer: Boolean,
+    val vatId: String,
+    val currencyCode: String,
+    val countryCode: String,
+    val places: List<Place>
 )
 
-data class Integration(
-    val integrationId: String,
-    val enabled: Boolean,
-    val deviceId: String,
-    val authorizationToken: String,
-    val externalPlaceId: String,
-    val externalPosId: String
+data class Place(
+    val placeId: String,
+    val name: String
 )

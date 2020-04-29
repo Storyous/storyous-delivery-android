@@ -18,7 +18,7 @@ class LoginViewModel : ViewModel() {
         authRepository.loginResult.value = null
     }
 
-    fun placeChoiceDone(place: Place, token: String) {
-        authRepository.placeChoiceDone(place, token)
+    fun placeChoiceDone(merchantId: String, placeId: String, token: String) {
+        authRepository.placeChoiceDone(merchantId, placeId, token)
     }
 }

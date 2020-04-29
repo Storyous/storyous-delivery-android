@@ -5,10 +5,8 @@ import okhttp3.ResponseBody
 import retrofit2.HttpException
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
-
 import java.io.IOException
 
 interface LoginService {
@@ -22,8 +20,4 @@ interface LoginService {
         @Field("client_id") clientId: String,
         @Field("code") code: String
     ): ResponseBody
-
-    @GET("places")
-    @Throws(HttpException::class, IOException::class)
-    suspend fun getPlaces(): BaseDataResponse<List<Place>>
 }

@@ -11,8 +11,8 @@ import com.storyous.delivery.LoginPlaceChoice
 import com.storyous.delivery.LoginResult
 import com.storyous.delivery.LoginSuccess
 import com.storyous.delivery.api.ApiProvider
+import com.storyous.delivery.api.ApiRouterService
 import com.storyous.delivery.api.LoginService
-import com.storyous.delivery.api.Place
 import com.storyous.delivery.common.DeliveryConfiguration
 import com.storyous.delivery.common.PlaceInfo
 import kotlinx.coroutines.CoroutineScope
@@ -42,6 +42,7 @@ class AuthRepository(
         URLEncoder.encode(BuildConfig.LOGIN_REDIRECT_URL, "UTF-8")
     )
     private val loginService = get(ApiProvider::class.java).get(LoginService::class)
+    private val apiRouterService = get(ApiProvider::class.java).get(ApiRouterService::class)
 
     init {
         launch(provider.IO) {
@@ -95,18 +96,18 @@ class AuthRepository(
             return@launch
         }
 
-        val places = runCatching {
+        val merchant = runCatching {
             withContext(provider.IO) {
-                loginService().getPlaces()
+                apiRouterService().getMerchant()
             }
         }.onFailure {
             Timber.e(it, "HTTP error while getting places")
-        }.getOrNull()?.data
+        }.getOrNull()
 
-        when {
-            places.isNullOrEmpty() -> loginResult.value = LoginError(LoginError.ERROR_NO_PLACE)
-            places.size == 1 -> onLoginSuccess(places[0], token)
-            else -> loginResult.value = LoginPlaceChoice(places, token)
+        when (merchant?.places?.size ?: 0) {
+            0 -> loginResult.value = LoginError(LoginError.ERROR_NO_PLACE)
+            1 -> onLoginSuccess(merchant!!.merchantId, merchant.places.first().placeId, token)
+            else -> loginResult.value = LoginPlaceChoice(merchant!!, token)
         }
 
         if (loginResult.value is LoginError) {
@@ -114,14 +115,14 @@ class AuthRepository(
         }
     }
 
-    private fun onLoginSuccess(place: Place, token: String) {
+    private fun onLoginSuccess(merchantId: String, placeId: String, token: String) {
         sp.edit()
             .putString(SP_KEY_TOKEN, token)
-            .putString(SP_KEY_PLACE_ID, place.placeId)
-            .putString(SP_KEY_MERCHANT_ID, place.merchantId)
+            .putString(SP_KEY_PLACE_ID, placeId)
+            .putString(SP_KEY_MERCHANT_ID, merchantId)
             .apply()
 
-        handlePlace(PlaceInfo(place.placeId, place.merchantId, true))
+        handlePlace(PlaceInfo(placeId, merchantId, true))
     }
 
     private fun handlePlace(place: PlaceInfo) {
@@ -136,7 +137,7 @@ class AuthRepository(
         loginResult.value = null
     }
 
-    fun placeChoiceDone(place: Place, token: String) {
-        onLoginSuccess(place, token)
+    fun placeChoiceDone(merchantId: String, placeId: String, token: String) {
+        onLoginSuccess(merchantId, placeId, token)
     }
 }

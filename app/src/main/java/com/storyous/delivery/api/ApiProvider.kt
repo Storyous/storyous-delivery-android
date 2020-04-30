@@ -27,7 +27,8 @@ class ApiProvider(
 
     private val services = mutableMapOf<KClass<out Any>, Any>()
 
-    lateinit var errorConverter: PosErrorConverterWrapper
+    lateinit var apiRouterErrorConverter: PosErrorConverterWrapper
+    lateinit var loginErrorConverter: PosErrorConverterWrapper
 
     companion object {
         private const val LOCALHOST = "http://localhost/"
@@ -35,15 +36,24 @@ class ApiProvider(
 
     init {
         cache = Cache(context.cacheDir, cacheSize)
+        createApiRouterService(BuildConfig.API_ROUTER_URL)
         createLoginService(BuildConfig.LOGIN_API_URL)
-        createDeliveryService(BuildConfig.DELIVERY_API_URL)
+        createDeliveryService(BuildConfig.API_ROUTER_URL)
+    }
+
+    private fun createApiRouterService(url: String) {
+        ApiBuilder(url, authInterceptor)
+            .also {
+                setService(ApiRouterService::class, it.build(ApiRouterService::class.java))
+                apiRouterErrorConverter = PosErrorConverterWrapper(it.buildError(ErrorResponse::class.java))
+            }
     }
 
     private fun createLoginService(url: String) {
         ApiBuilder(url, authInterceptor)
             .also {
                 setService(LoginService::class, it.build(LoginService::class.java))
-                errorConverter = PosErrorConverterWrapper(it.buildError(ErrorResponse::class.java))
+                loginErrorConverter = PosErrorConverterWrapper(it.buildError(ErrorResponse::class.java))
             }
     }
 

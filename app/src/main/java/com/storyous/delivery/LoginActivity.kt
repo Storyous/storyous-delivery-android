@@ -5,19 +5,26 @@ import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.storyous.commonutils.AlarmUtils
+import com.storyous.commonutils.CoroutineProviderScope
+import com.storyous.delivery.api.Place
 import com.storyous.delivery.common.DeliveryActivity
 import com.storyous.delivery.common.DownloadDeliveryReceiver
 import com.storyous.delivery.common.PlaceInfo
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
+import kotlin.coroutines.resume
 
 @Suppress("TooManyFunctions")
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), CoroutineScope by CoroutineProviderScope() {
 
     private val viewModel: LoginViewModel by viewModels()
 
@@ -53,6 +60,15 @@ class LoginActivity : AppCompatActivity() {
 
     private fun onLoginResult(result: LoginResult?) {
         when (result) {
+            is LoginPlaceChoice -> launch {
+                placeChoice(result.merchant.places).let {
+                    viewModel.placeChoiceDone(
+                        result.merchant.merchantId,
+                        it.placeId,
+                        result.token
+                    )
+                }
+            }
             is LoginSuccess -> onPlaceResult(result.placeInfo)
             is LoginError -> onLoginError(result)
         }
@@ -71,6 +87,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun onLoginError(error: LoginError) {
+        (application as App).clearRepos()
+
         val messageResId = when {
             error.errorCode == LoginError.ERROR_TOO_MANY_PLACES -> R.string.error_not_supported_multiple_places
             error.isRecoverable() -> R.string.error_recoverable
@@ -79,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
 
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.error_header, error.errorCode))
-            .setMessage(messageResId)
+            .setMessage(getString(messageResId, error.errorCode))
             .setPositiveButton(R.string.understand) { dialog, _ ->
                 viewModel.errorConsumed()
                 if (error.isRecoverable()) {
@@ -96,10 +114,36 @@ class LoginActivity : AppCompatActivity() {
         webview.clearCache(false)
         webview.clearFormData()
         viewModel.loginUrl.let { url ->
-            webview.loadUrl(url, mapOf(
-                "credentials" to "include",
-                "Accept-Language" to LocaleUtil().getAcceptedLanguageHeaderValue()
-            ))
+            webview.loadUrl(
+                url, mapOf(
+                    "credentials" to "include",
+                    "Accept-Language" to LocaleUtil().getAcceptedLanguageHeaderValue()
+                )
+            )
         }
     }
+
+    private suspend fun placeChoice(places: List<Place>): Place =
+        suspendCancellableCoroutine { continuation ->
+            val adapter = ArrayAdapter(
+                this,
+                R.layout.choose_place_singlechoice,
+                places.map { it.name }.toTypedArray()
+            )
+            MaterialAlertDialogBuilder(this)
+                .setTitle(getString(R.string.choose_place))
+                .setSingleChoiceItems(adapter, -1) { dialog, which ->
+                    continuation.resume(places[which])
+                    dialog.dismiss()
+                }
+                .setOnCancelListener {
+                    continuation.cancel()
+                    reload()
+                }
+                .setNegativeButton(R.string.cancel) { _, _ ->
+                    continuation.cancel()
+                    reload()
+                }
+                .show()
+        }
 }

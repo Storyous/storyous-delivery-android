@@ -8,4 +8,5 @@
     <string name="logout">Odhlásit</string>
     <string name="error_not_supported_multiple_places">Snažíte se přihlásit k obchodníkovi s více podniky. Tato funkce zatím není podporována. Vydržte prosím v přízni, v nejbližších aktualizacích vám tuto funkci zpřístupníme. Děkujeme za pochopení</string>
     <string name="understand">Rozumím</string>
+    <string name="choose_place">Máte přístup k více podnikům. Vyberte jeden, prosím:</string>
 </resources>

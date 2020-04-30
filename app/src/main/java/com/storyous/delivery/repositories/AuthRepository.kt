@@ -35,7 +35,7 @@ class AuthRepository(
     }
 
     private val sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
-    val loginResult = MutableLiveData<LoginResult>()
+    val loginResult = MutableLiveData<LoginResult?>()
     val loginUrl = String.format(
         BuildConfig.LOGIN_URL,
         URLEncoder.encode(BuildConfig.LOGIN_CLIENT_ID, "UTF-8"),

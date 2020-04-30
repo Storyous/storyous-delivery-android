@@ -19,9 +19,7 @@ import com.storyous.delivery.common.PlaceInfo
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
-import kotlin.coroutines.resume
 
 @Suppress("TooManyFunctions")
 class LoginActivity : AppCompatActivity(), CoroutineScope by CoroutineProviderScope() {
@@ -60,15 +58,7 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by CoroutineProviderSc
 
     private fun onLoginResult(result: LoginResult?) {
         when (result) {
-            is LoginPlaceChoice -> launch {
-                placeChoice(result.merchant.places).let {
-                    viewModel.placeChoiceDone(
-                        result.merchant.merchantId,
-                        it.placeId,
-                        result.token
-                    )
-                }
-            }
+            is LoginPlaceChoice -> placeChoice(result.merchant.places)
             is LoginSuccess -> onPlaceResult(result.placeInfo)
             is LoginError -> onLoginError(result)
         }
@@ -123,27 +113,24 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by CoroutineProviderSc
         }
     }
 
-    private suspend fun placeChoice(places: List<Place>): Place =
-        suspendCancellableCoroutine { continuation ->
-            val adapter = ArrayAdapter(
-                this,
-                R.layout.choose_place_singlechoice,
-                places.map { it.name }.toTypedArray()
-            )
-            MaterialAlertDialogBuilder(this)
-                .setTitle(getString(R.string.choose_place))
-                .setSingleChoiceItems(adapter, -1) { dialog, which ->
-                    continuation.resume(places[which])
-                    dialog.dismiss()
-                }
-                .setOnCancelListener {
-                    continuation.cancel()
-                    reload()
-                }
-                .setNegativeButton(R.string.cancel) { _, _ ->
-                    continuation.cancel()
-                    reload()
-                }
-                .show()
-        }
+    private fun placeChoice(places: List<Place>) {
+        val adapter = ArrayAdapter(
+            this,
+            R.layout.choose_place_singlechoice,
+            places.map { it.name }.toTypedArray()
+        )
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.choose_place))
+            .setSingleChoiceItems(adapter, -1) { dialog, which ->
+                viewModel.placeChoiceDone(places[which])
+                dialog.dismiss()
+            }
+            .setOnCancelListener {
+                reload()
+            }
+            .setNegativeButton(R.string.cancel) { _, _ ->
+                reload()
+            }
+            .show()
+    }
 }

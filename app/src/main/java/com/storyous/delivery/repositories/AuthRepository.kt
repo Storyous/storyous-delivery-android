@@ -109,10 +109,6 @@ class AuthRepository(
             1 -> onLoginSuccess(merchant!!.merchantId, merchant.places.first().placeId, token)
             else -> loginResult.value = LoginPlaceChoice(merchant!!, token)
         }
-
-        if (loginResult.value is LoginError) {
-            clear()
-        }
     }
 
     private fun onLoginSuccess(merchantId: String, placeId: String, token: String) {
@@ -128,7 +124,6 @@ class AuthRepository(
     private fun handlePlace(place: PlaceInfo) {
         DeliveryConfiguration.placeInfo = place
         loginResult.value = LoginSuccess(place)
-        println("FIRST PLACE: $place")
     }
 
     fun clear() {

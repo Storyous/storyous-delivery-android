@@ -10,21 +10,18 @@ class RingtonePlayer(context: Context, private val interval: Long = 15000L) {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private val playRingtone = Runnable {
-        ringtonePlayer.start()
-    }
+    private val playRingtone = Runnable { player.start() }
 
-    private val ringtonePlayer: MediaPlayer by lazy {
+    private val player: MediaPlayer by lazy {
         with(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)) {
             MediaPlayer.create(context.applicationContext, this)
-        }.apply {
-            setOnCompletionListener {
-                handler.postDelayed(playRingtone, interval)
-            }
-        }
+        }.apply { setOnCompletionListener { play() } }
     }
 
-    fun play() = handler.postDelayed(playRingtone, interval)
+    fun play() {
+        pause()
+        handler.postDelayed(playRingtone, interval)
+    }
 
     fun pause() = handler.removeCallbacks(playRingtone)
 }

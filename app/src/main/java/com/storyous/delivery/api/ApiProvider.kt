@@ -4,8 +4,8 @@ import android.content.Context
 import com.google.gson.Gson
 import com.storyous.delivery.BuildConfig
 import com.storyous.delivery.common.api.DeliveryErrorConverterWrapper
+import com.storyous.delivery.common.api.DeliveryErrorResponse
 import com.storyous.delivery.common.api.DeliveryService
-import com.storyous.delivery.common.api.model.DeliveryErrorResponse
 import com.storyous.storyouspay.api.AuthHeaderProvider
 import com.storyous.storyouspay.api.AuthInterceptor
 import com.storyous.storyouspay.api.PosErrorConverterWrapper

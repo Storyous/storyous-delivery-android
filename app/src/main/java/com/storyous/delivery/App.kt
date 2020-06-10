@@ -4,8 +4,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
+import com.storyous.commonutils.AlarmUtils
 import com.storyous.commonutils.CoroutineProviderScope
 import com.storyous.delivery.common.DeliveryConfiguration
+import com.storyous.delivery.common.DownloadDeliveryReceiver
 import com.storyous.delivery.common.repositories.DeliveryRepository
 import com.storyous.delivery.repositories.AuthRepository
 import kotlinx.coroutines.CoroutineScope
@@ -58,6 +60,7 @@ class App : MultiDexApplication(), CoroutineScope by CoroutineProviderScope() {
             toolbar.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.logout -> {
+                        AlarmUtils.removeRepeatingAlarm(this, DownloadDeliveryReceiver::class)
                         clearRepos()
                         LoginActivity.launch(this)
                         true
@@ -68,7 +71,7 @@ class App : MultiDexApplication(), CoroutineScope by CoroutineProviderScope() {
         }
     }
 
-    public fun clearRepos() {
+    fun clearRepos() {
         launch {
             DeliveryConfiguration.deliveryRepository?.clear()
         }

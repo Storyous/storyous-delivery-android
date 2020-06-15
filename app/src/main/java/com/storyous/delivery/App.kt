@@ -2,7 +2,6 @@ package com.storyous.delivery
 
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.lifecycle.observe
 import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.storyous.commonutils.AlarmUtils
@@ -44,7 +43,7 @@ class App : MultiDexApplication(), CoroutineScope by CoroutineProviderScope() {
 
         deliveryRepository.apply {
             DeliveryConfiguration.deliveryRepository = this
-            newOrdersLive.observe(ProcessLifecycleOwner.get()) {
+            newOrdersLive.observeForever {
                 it.forEach { order ->
                     showNewOrderNotification(this@App, order)
                 }

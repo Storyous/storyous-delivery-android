@@ -17,7 +17,8 @@ buildscript {
     // https://square.github.io/okhttp/changelog_3x/ last okhttp version for sdk 19
     ext.okhttp_version = "3.12.10"
     ext.mockito_kotlin_version = '2.2.0'
-    ext.firebase_version = "17.3.0"
+    ext.firebase_version = "17.4.3"
+    ext.crashlytics_version = "17.0.1"
     ext.scribe_version = "3.4.1"
     ext.junit_version = "4.13"
     ext.junit_ext_version = "1.1.1"
@@ -55,6 +56,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.3'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.1.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

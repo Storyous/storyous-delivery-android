@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: "kotlin-kapt"
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 repositories {
     mavenCentral()
@@ -120,6 +121,7 @@ dependencies {
 
     // Firebase
     implementation "com.google.firebase:firebase-analytics:$firebase_version"
+    implementation "com.google.firebase:firebase-crashlytics:$crashlytics_version"
 
     implementation "org.koin:koin-android:$koin_version"
     implementation "org.koin:koin-androidx-scope:$koin_version"

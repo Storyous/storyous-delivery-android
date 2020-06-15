@@ -2,6 +2,7 @@ package com.storyous.delivery.repositories
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.storyous.commonutils.CoroutineProviderScope
 import com.storyous.commonutils.onNonNull
 import com.storyous.commonutils.provider
@@ -122,6 +123,7 @@ class AuthRepository(
     }
 
     private fun handlePlace(place: PlaceInfo) {
+        FirebaseCrashlytics.getInstance().setUserId(place.placeId)
         DeliveryConfiguration.placeInfo = place
         loginResult.value = LoginSuccess(place)
     }

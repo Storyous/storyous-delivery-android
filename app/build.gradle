@@ -20,8 +20,8 @@ android {
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
         multiDexEnabled true
-        versionCode 12
-        versionName "0.0.12"
+        versionCode 13
+        versionName "0.0.13"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "API_ROUTER_URL", "\"https://api.$root_url/\""

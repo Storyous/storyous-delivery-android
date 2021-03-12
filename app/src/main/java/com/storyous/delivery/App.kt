@@ -6,6 +6,7 @@ import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.storyous.commonutils.AlarmUtils
 import com.storyous.commonutils.CoroutineProviderScope
+import com.storyous.commonutils.TimestampUtil
 import com.storyous.delivery.common.DeliveryConfiguration
 import com.storyous.delivery.common.DownloadDeliveryReceiver
 import com.storyous.delivery.common.repositories.DeliveryRepository
@@ -40,6 +41,8 @@ class App : MultiDexApplication(), CoroutineScope by CoroutineProviderScope() {
             androidContext(this@App)
             modules(applicationModule)
         }
+        
+        TimestampUtil.INSTANCE.init(this)
 
         deliveryRepository.apply {
             DeliveryConfiguration.deliveryRepository = this

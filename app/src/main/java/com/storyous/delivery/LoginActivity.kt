@@ -113,14 +113,13 @@ class LoginActivity : AppCompatActivity(), CoroutineScope by CoroutineProviderSc
     private fun reload() {
         webview.clearCache(false)
         webview.clearFormData()
-        viewModel.loginUrl.let { url ->
-            webview.loadUrl(
-                url, mapOf(
-                    "credentials" to "include",
-                    "Accept-Language" to LocaleUtil().getAcceptedLanguageHeaderValue()
-                )
+        webview.loadUrl(
+            viewModel.loginUrl,
+            mapOf(
+                "credentials" to "include",
+                "Accept-Language" to LocaleUtil().getAcceptedLanguageHeaderValue()
             )
-        }
+        )
     }
 
     private suspend fun placeChoice(places: List<Place>): Place =
